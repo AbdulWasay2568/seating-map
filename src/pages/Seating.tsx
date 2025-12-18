@@ -56,17 +56,24 @@ export default function SeatingPage() {
           });
         });
 
-        setSelectedSeats(seats);
+        if (seats.length > 0) {
+          setSelectedSeats(seats);
+        }
       } catch (err) {
         console.error('Failed to load selections from localStorage', err);
+        localStorage.removeItem('seatSelections');
       }
     }
   }, [venue]);
 
-  // Save selections to localStorage
+  // Save selections to localStorage whenever they change
   useEffect(() => {
     const seatIds = selectedSeats.map((s) => s.seat.id);
-    localStorage.setItem('seatSelections', JSON.stringify(seatIds));
+    try {
+      localStorage.setItem('seatSelections', JSON.stringify(seatIds));
+    } catch (err) {
+      console.error('Failed to save selections to localStorage', err);
+    }
   }, [selectedSeats]);
 
   const handleSeatClick = (seat: SeatType, sectionLabel: string, rowIndex: number) => {

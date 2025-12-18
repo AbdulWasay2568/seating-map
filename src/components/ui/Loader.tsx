@@ -1,5 +1,4 @@
 import { Loader2 } from 'lucide-react';
-import { TAILWIND_COLORS } from '../../utils/colors';
 
 interface LoaderProps {
   message?: string;

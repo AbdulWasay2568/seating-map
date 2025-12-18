@@ -136,30 +136,32 @@ export default function SeatingPage() {
     <div className="min-h-screen bg-slate-950 px-4 sm:px-6 lg:px-8 py-6">
       <VenueHeader venue={venue} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 max-w-7xl mx-auto">
-        {/* Main seating map */}
-        <div className="bg-slate-900 rounded-xl p-6 sm:p-8 shadow-2xl overflow-x-auto border border-slate-800">
-          <SeatingMap
-            venue={venue}
-            selectedSeats={selectedSeats}
-            focusedSeat={focusedSeat}
-            onSeatClick={handleSeatClick}
-            onSeatFocus={handleSeatFocus}
-            onSeatBlur={handleSeatBlur}
-          />
-        </div>
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Top section: Seating Map and Seat Details side by side */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
+          {/* Main seating map */}
+          <div className="bg-slate-900 rounded-xl p-6 sm:p-8 shadow-2xl overflow-x-auto border border-slate-800">
+            <SeatingMap
+              venue={venue}
+              selectedSeats={selectedSeats}
+              focusedSeat={focusedSeat}
+              onSeatClick={handleSeatClick}
+              onSeatFocus={handleSeatFocus}
+              onSeatBlur={handleSeatBlur}
+            />
+          </div>
 
-        {/* Sidebar with details and summary */}
-        <div className="flex flex-col gap-6 h-fit lg:sticky lg:top-8">
           {/* Seat Details */}
-          <SeatDetails focusedSeat={focusedSeat} />
-
-          {/* Selection Summary */}
-          <SelectionSummary
-            selectedSeats={selectedSeats}
-            onClearSelection={handleClearSelection}
-          />
+          <div className="h-fit lg:sticky lg:top-8">
+            <SeatDetails focusedSeat={focusedSeat} />
+          </div>
         </div>
+
+        {/* Selection Summary below */}
+        <SelectionSummary
+          selectedSeats={selectedSeats}
+          onClearSelection={handleClearSelection}
+        />
       </div>
     </div>
   );

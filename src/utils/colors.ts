@@ -6,7 +6,7 @@ export const COLORS = {
   // Seat statuses
   seat: {
     available: '#10b981', // Green
-    reserved: '#ef4444', // Red
+    reserved: '#dc2626', // Red
     sold: '#6b7280', // Gray
     held: '#f59e0b', // Amber
   },

@@ -15,6 +15,29 @@ export default function VenueHeader({ venue }: VenueHeaderProps) {
     );
   }, 0);
 
+  const seatCounts = {
+    available: venue.sections.reduce((sum, section) => {
+      return sum + section.rows.reduce((rowSum, row) => {
+        return rowSum + row.seats.filter(s => s.status === 'available').length;
+      }, 0);
+    }, 0),
+    reserved: venue.sections.reduce((sum, section) => {
+      return sum + section.rows.reduce((rowSum, row) => {
+        return rowSum + row.seats.filter(s => s.status === 'reserved').length;
+      }, 0);
+    }, 0),
+    sold: venue.sections.reduce((sum, section) => {
+      return sum + section.rows.reduce((rowSum, row) => {
+        return rowSum + row.seats.filter(s => s.status === 'sold').length;
+      }, 0);
+    }, 0),
+    held: venue.sections.reduce((sum, section) => {
+      return sum + section.rows.reduce((rowSum, row) => {
+        return rowSum + row.seats.filter(s => s.status === 'held').length;
+      }, 0);
+    }, 0),
+  };
+
   return (
     <div className="mb-8 max-w-7xl mx-auto">
       {/* Header Top - Branding */}
@@ -54,10 +77,10 @@ export default function VenueHeader({ venue }: VenueHeaderProps) {
       {/* Legend */}
       <div className="flex flex-wrap gap-6">
         {[
-          { label: 'Available', color: COLORS.seat.available },
-          { label: 'Reserved', color: COLORS.seat.reserved },
-          { label: 'Sold', color: COLORS.seat.sold },
-          { label: 'Held', color: COLORS.seat.held },
+          { label: 'Available', color: COLORS.seat.available, count: seatCounts.available },
+          { label: 'Reserved', color: COLORS.seat.reserved, count: seatCounts.reserved },
+          { label: 'Sold', color: COLORS.seat.sold, count: seatCounts.sold },
+          { label: 'Held', color: COLORS.seat.held, count: seatCounts.held },
         ].map((item) => (
           <div key={item.label} className="flex items-center gap-3">
             <div
@@ -68,7 +91,7 @@ export default function VenueHeader({ venue }: VenueHeaderProps) {
                 backgroundColor: item.color,
               }}
             />
-            <span className="text-sm font-medium text-slate-300">{item.label}</span>
+            <span className="text-sm font-medium text-slate-300">{item.label} ({item.count})</span>
           </div>
         ))}
       </div>

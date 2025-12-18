@@ -4,7 +4,7 @@ import { SeatStatus } from './enum.interface';
  * Seat interface
  */
 export interface Seat {
-  id: number;
+  id: string;
   col: number;
   x: number;
   y: number;
@@ -24,7 +24,7 @@ export interface Row {
  * Section interface containing multiple rows
  */
 export interface Section {
-  id: number;
+  id: string;
   label: string;
   transform: {
     x: number;
@@ -46,7 +46,7 @@ export interface MapDimensions {
  * Venue interface containing all sections
  */
 export interface Venue {
-  id: number;
+  id: string;
   name: string;
   map: MapDimensions;
   sections: Section[];

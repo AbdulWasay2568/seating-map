@@ -1,16 +1,18 @@
 import type { SelectedSeatInfo } from '../interfaces';
 import { TAILWIND_COLORS } from '../utils/colors';
 import { getPriceForTier } from '../utils/priceMap';
-import { Ticket, MapPin, Check } from 'lucide-react';
+import { Ticket, MapPin, Check, X } from 'lucide-react';
 
 interface SelectionSummaryProps {
   selectedSeats: SelectedSeatInfo[];
   onClearSelection: () => void;
+  onRemoveSeat?: (seatId: string) => void;
 }
 
 export default function SelectionSummary({
   selectedSeats,
   onClearSelection,
+  onRemoveSeat,
 }: SelectionSummaryProps) {
   const seatCount = selectedSeats.length;
   const seatsRemaining = 8 - seatCount;
@@ -103,14 +105,26 @@ export default function SelectionSummary({
               {selectedSeats.map((s) => (
                 <div
                   key={s.seat.id}
-                  className="flex justify-between items-center p-3 bg-slate-800 rounded-lg border border-slate-700 hover:border-blue-600 transition-colors"
+                  className="flex justify-between items-center p-3 bg-slate-800 rounded-lg border border-slate-700 hover:border-blue-600 transition-colors group"
                 >
                   <span className="font-semibold text-white text-sm">
                     {s.section} • Row {s.row} • Seat {s.seat.col}
                   </span>
-                  <span className="font-bold text-blue-400 text-sm">
-                    ${getPriceForTier(s.seat.priceTier)}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="font-bold text-blue-400 text-sm">
+                      ${getPriceForTier(s.seat.priceTier)}
+                    </span>
+                    {onRemoveSeat && (
+                      <button
+                        onClick={() => onRemoveSeat(s.seat.id)}
+                        className="p-1 hover:bg-slate-700 rounded transition-colors text-slate-400 hover:text-red-400"
+                        title="Remove seat"
+                        aria-label={`Remove seat ${s.seat.col.toString()} from selection`}
+                      >
+                        <X className="w-4 h-4 cursor-pointer " />
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>

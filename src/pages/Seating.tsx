@@ -106,6 +106,10 @@ export default function SeatingPage() {
     setFocusedSeat(null);
   };
 
+  const handleRemoveSeat = (seatId: string) => {
+    setSelectedSeats(selectedSeats.filter((s) => s.seat.id !== seatId));
+  };
+
   const handleRetry = () => {
     setError(null);
     setLoading(true);
@@ -168,6 +172,7 @@ export default function SeatingPage() {
         <SelectionSummary
           selectedSeats={selectedSeats}
           onClearSelection={handleClearSelection}
+          onRemoveSeat={handleRemoveSeat}
         />
       </div>
     </div>

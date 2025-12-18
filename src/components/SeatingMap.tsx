@@ -87,6 +87,173 @@ export default function SeatingMap({
     });
   };
 
+  const handleArrowKeyNavigation = (e: React.KeyboardEvent<SVGSVGElement>) => {
+    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+      return;
+    }
+
+    e.preventDefault();
+
+    if (!focusedSeat) return;
+
+    // Build a sequential list of seats organized by section -> row -> seat
+    const seatMap: Array<{
+      seat: SeatType;
+      section: string;
+      row: number;
+      sectionIndex: number;
+      rowIndex: number;
+      seatIndex: number;
+    }> = [];
+
+    venue.sections.forEach((section, sectionIndex) => {
+      section.rows.forEach((row, rowIndex) => {
+        row.seats.forEach((seat, seatIndex) => {
+          seatMap.push({
+            seat,
+            section: section.label,
+            row: row.index,
+            sectionIndex,
+            rowIndex,
+            seatIndex,
+          });
+        });
+      });
+    });
+
+    // Find current seat position
+    const currentIndex = seatMap.findIndex(
+      (s) => s.seat.id === focusedSeat.seat.id
+    );
+
+    if (currentIndex === -1) return;
+
+    const current = seatMap[currentIndex];
+    let nextSeat: (typeof seatMap)[0] | null = null;
+
+    if (e.key === 'ArrowRight') {
+      // Move to next seat in same row, or first seat of next row if at end
+      const nextInRow = seatMap.find(
+        (s: (typeof seatMap)[0]) =>
+          s.sectionIndex === current.sectionIndex &&
+          s.rowIndex === current.rowIndex &&
+          s.seatIndex > current.seatIndex
+      );
+
+      if (nextInRow) {
+        nextSeat = nextInRow;
+      } else {
+        // Find first seat of next row in same section
+        const nextRow = seatMap.find(
+          (s: (typeof seatMap)[0]) =>
+            s.sectionIndex === current.sectionIndex &&
+            s.rowIndex > current.rowIndex
+        );
+
+        if (nextRow) {
+          nextSeat = nextRow;
+        } else {
+          // Find first seat of first row in next section
+          const nextSection = seatMap.find(
+            (s: (typeof seatMap)[0]) => s.sectionIndex > current.sectionIndex
+          );
+
+          if (nextSection) {
+            nextSeat = nextSection;
+          }
+        }
+      }
+    } else if (e.key === 'ArrowLeft') {
+      // Move to previous seat in same row, or last seat of previous row if at start
+      const prevInRow = [...seatMap]
+        .reverse()
+        .find(
+          (s: (typeof seatMap)[0]) =>
+            s.sectionIndex === current.sectionIndex &&
+            s.rowIndex === current.rowIndex &&
+            s.seatIndex < current.seatIndex
+        );
+
+      if (prevInRow) {
+        nextSeat = prevInRow;
+      } else {
+        // Find last seat of previous row in same section
+        const prevRow = [...seatMap]
+          .reverse()
+          .find(
+            (s: (typeof seatMap)[0]) =>
+              s.sectionIndex === current.sectionIndex &&
+              s.rowIndex < current.rowIndex
+          );
+
+        if (prevRow) {
+          nextSeat = prevRow;
+        } else {
+          // Find last seat of last row in previous section
+          const prevSection = [...seatMap]
+            .reverse()
+            .find(
+              (s: (typeof seatMap)[0]) => s.sectionIndex < current.sectionIndex
+            );
+
+          if (prevSection) {
+            nextSeat = prevSection;
+          }
+        }
+      }
+    } else if (e.key === 'ArrowDown') {
+      // Move to same position seat in next row, or first seat of next section if at end
+      const nextRow = seatMap.find(
+        (s: (typeof seatMap)[0]) =>
+          s.sectionIndex === current.sectionIndex &&
+          s.rowIndex > current.rowIndex &&
+          s.seatIndex === current.seatIndex
+      );
+
+      if (nextRow) {
+        nextSeat = nextRow;
+      } else {
+        // Find first seat of next section
+        const nextSection = seatMap.find(
+          (s: (typeof seatMap)[0]) => s.sectionIndex > current.sectionIndex
+        );
+
+        if (nextSection) {
+          nextSeat = nextSection;
+        }
+      }
+    } else if (e.key === 'ArrowUp') {
+      // Move to same position seat in previous row, or first seat of previous section if at start
+      const prevRow = [...seatMap]
+        .reverse()
+        .find(
+          (s: (typeof seatMap)[0]) =>
+            s.sectionIndex === current.sectionIndex &&
+            s.rowIndex < current.rowIndex &&
+            s.seatIndex === current.seatIndex
+        );
+
+      if (prevRow) {
+        nextSeat = prevRow;
+      } else {
+        // Find last seat of previous section
+        const prevSection = [...seatMap]
+          .reverse()
+          .find(
+            (s: (typeof seatMap)[0]) => s.sectionIndex < current.sectionIndex
+          );
+
+        if (prevSection) {
+          nextSeat = prevSection;
+        }
+      }
+    }
+
+    if (nextSeat) {
+      onSeatFocus(nextSeat.seat, nextSeat.section, nextSeat.row);
+    }
+  };
+
   return (
     <div className="relative">
       {/* Control Panel */}
@@ -159,6 +326,8 @@ export default function SeatingMap({
           aria-label={`${venue.name} seating map`}
           onMouseDown={handleMouseDown}
           onWheel={handleWheel}
+          onKeyDown={handleArrowKeyNavigation}
+          tabIndex={0}
         >
         {/* Render all sections */}
         {venue.sections.map((section) => {

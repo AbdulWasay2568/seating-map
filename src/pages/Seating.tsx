@@ -144,14 +144,14 @@ export default function SeatingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 sm:px-6 lg:px-8 py-6">
+    <div className="min-h-screen bg-slate-950 px-4 sm:px-6 lg:px-8 py-8">
       <VenueHeader venue={venue} />
 
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Top section: Seating Map and Seat Details side by side */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
           {/* Main seating map */}
-          <div className="bg-slate-900 rounded-xl p-6 sm:p-8 shadow-2xl overflow-x-auto border border-slate-800">
+          <div className="bg-slate-900 rounded-lg p-6 sm:p-8 overflow-x-auto border border-slate-800">
             <SeatingMap
               venue={venue}
               selectedSeats={selectedSeats}

@@ -46,7 +46,7 @@ export interface MapDimensions {
  * Venue interface containing all sections
  */
 export interface Venue {
-  id: string;
+  venueId: string;
   name: string;
   map: MapDimensions;
   sections: Section[];

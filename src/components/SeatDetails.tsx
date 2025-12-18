@@ -1,6 +1,6 @@
 import type { SelectedSeatInfo } from '../interfaces';
 import { getPriceForTier } from '../utils/priceMap';
-import { Hand, CheckCircle } from 'lucide-react';
+import { Hand } from 'lucide-react';
 
 interface SeatDetailsProps {
   focusedSeat: SelectedSeatInfo | null;
@@ -9,14 +9,14 @@ interface SeatDetailsProps {
 export default function SeatDetails({ focusedSeat }: SeatDetailsProps) {
   if (!focusedSeat) {
     return (
-      <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-xl p-8 text-center border border-slate-700 shadow-lg hover:shadow-xl transition-shadow">
+      <div className="bg-slate-800 rounded-lg p-8 text-center border border-slate-700">
         <div className="mb-4 flex justify-center">
-          <div className="p-3 bg-blue-900 rounded-full">
-            <Hand className="w-6 h-6 text-blue-300" />
+          <div className="p-2 bg-slate-700 rounded">
+            <Hand className="w-5 h-5 text-slate-400" />
           </div>
         </div>
-        <p className="text-slate-300 font-semibold text-sm uppercase tracking-wide">
-          Click on a seat to view details
+        <p className="text-slate-400 font-normal text-sm">
+          Select a seat to view details
         </p>
       </div>
     );
@@ -25,80 +25,68 @@ export default function SeatDetails({ focusedSeat }: SeatDetailsProps) {
   const { seat, section, row } = focusedSeat;
   const price = getPriceForTier(seat.priceTier);
   
-  const statusColorMap: Record<string, { bg: string; text: string; badge: string }> = {
+  const statusColorMap: Record<string, { label: string; color: string }> = {
     available: {
-      bg: 'bg-blue-950',
-      text: 'text-blue-300',
-      badge: 'bg-blue-900 text-blue-200',
+      label: 'Available',
+      color: '#10b981',
     },
     reserved: {
-      bg: 'bg-amber-950',
-      text: 'text-amber-300',
-      badge: 'bg-amber-900 text-amber-200',
+      label: 'Reserved',
+      color: '#f59e0b',
     },
     sold: {
-      bg: 'bg-rose-950',
-      text: 'text-rose-300',
-      badge: 'bg-rose-900 text-rose-200',
+      label: 'Sold',
+      color: '#6b7280',
     },
     held: {
-      bg: 'bg-blue-950',
-      text: 'text-blue-300',
-      badge: 'bg-blue-900 text-blue-200',
+      label: 'On Hold',
+      color: '#3b82f6',
     },
   };
 
-  const colors = statusColorMap[seat.status] || statusColorMap.available;
+  const status = statusColorMap[seat.status] || statusColorMap.available;
 
   return (
-    <div className={`${colors.bg} rounded-xl overflow-hidden border border-slate-700 hover:border-blue-500 transition-all duration-300 shadow-lg`}>
-      {/* Header with status badge */}
-      <div className="bg-linear-to-r from-slate-800 to-slate-900 p-6 border-b border-slate-700">
-        <div className="flex items-start justify-between gap-4">
+    <div className="bg-slate-800 rounded-lg overflow-hidden border border-slate-700">
+      {/* Header */}
+      <div className="p-6 border-b border-slate-700">
+        <div className="flex items-center justify-between gap-4 mb-4">
           <div>
-            <h3 className="text-xs uppercase tracking-widest text-slate-400 font-bold mb-2">
-              Seat Location
-            </h3>
-            <p className={`text-2xl font-black ${colors.text}`}>
+            <p className="text-xs text-slate-500 mb-1 font-medium">Seat Location</p>
+            <h3 className="text-xl font-semibold text-white">
               {section} • Row {row} • Seat {seat.col}
-            </p>
+            </h3>
           </div>
-          <span
-            className={`${colors.badge} px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wider whitespace-nowrap`}
-          >
-            {seat.status}
-          </span>
+          <div className="flex items-center gap-2 px-3 py-1 rounded bg-slate-700">
+            <div 
+              style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: status.color }}
+            />
+            <span className="text-xs font-medium text-slate-300">{status.label}</span>
+          </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-6 space-y-6">
+      <div className="p-6 space-y-5">
         <div>
-          <div className="text-xs uppercase tracking-widest font-bold text-slate-400 mb-2">
-            Price
-          </div>
-          <p className={`text-3xl font-black ${colors.text}`}>
+          <p className="text-xs text-slate-500 mb-2 font-medium">Price</p>
+          <p className="text-2xl font-semibold text-white">
             ${price}
           </p>
         </div>
 
         <div>
-          <div className="text-xs uppercase tracking-widest font-bold text-slate-400 mb-2">
-            Seat ID
-          </div>
-          <p className="text-sm font-mono text-slate-300 bg-slate-800 bg-opacity-60 p-3 rounded-lg border border-slate-700">
+          <p className="text-xs text-slate-500 mb-2 font-medium">Seat ID</p>
+          <p className="text-xs font-mono text-slate-300 bg-slate-700 bg-opacity-40 p-2 rounded border border-slate-600">
             {seat.id}
           </p>
         </div>
 
         {seat.status === 'available' && (
-          <div className="mt-6 p-4 rounded-lg bg-emerald-900 border border-emerald-700 hover:bg-emerald-800 transition-colors">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-emerald-400" />
-              <p className="text-sm text-emerald-300 font-semibold">
-                Available for selection
-              </p>
-            </div>
+          <div className="mt-2 p-3 rounded bg-emerald-900 bg-opacity-60 border border-emerald-700">
+            <p className="text-xs text-emerald-300 font-normal">
+              ✓ Available for selection
+            </p>
           </div>
         )}
       </div>

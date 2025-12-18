@@ -39,59 +39,51 @@ export default function VenueHeader({ venue }: VenueHeaderProps) {
   };
 
   return (
-    <div className="mb-8 max-w-7xl mx-auto">
+    <div className="mb-12 max-w-7xl mx-auto">
       {/* Header Top - Branding */}
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-linear-to-br from-blue-600 to-cyan-500 rounded-lg flex items-center justify-center">
-            <span className="text-white font-black text-lg">M</span>
-          </div>
-          <div>
-            <h1 className="text-2xl font-black text-white">{venue.name}</h1>
-            <p className="text-xs text-slate-400">Venue ID: {venue.id}</p>
-          </div>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-semibold text-white mb-1">{venue.name}</h1>
+          <p className="text-sm text-slate-500">Venue ID: <span className="font-mono text-slate-400">{venue.venueId}</span></p>
         </div>
 
         {/* Stats */}
-        <div className="flex gap-6">
-          <div className="text-right">
-            <div className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-1">
-              Total Seats
+        <div className="flex gap-8">
+          {[
+            { label: 'Total Seats', value: totalSeats },
+            { label: 'Sections', value: venue.sections.length },
+          ].map((stat) => (
+            <div key={stat.label}>
+              <div className="text-xs text-slate-500 font-medium mb-2">
+                {stat.label}
+              </div>
+              <div className="text-3xl font-semibold text-white">
+                {stat.value}
+              </div>
             </div>
-            <div className="text-2xl font-black text-white">
-              {totalSeats}
-            </div>
-          </div>
-
-          <div className="text-right">
-            <div className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-1">
-              Sections
-            </div>
-            <div className="text-2xl font-black text-white">
-              {venue.sections.length}
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap gap-6">
+      <div className="grid grid-cols-4 gap-4">
         {[
           { label: 'Available', color: COLORS.seat.available, count: seatCounts.available },
           { label: 'Reserved', color: COLORS.seat.reserved, count: seatCounts.reserved },
           { label: 'Sold', color: COLORS.seat.sold, count: seatCounts.sold },
           { label: 'Held', color: COLORS.seat.held, count: seatCounts.held },
         ].map((item) => (
-          <div key={item.label} className="flex items-center gap-3">
+          <div key={item.label} className="flex items-center gap-2">
             <div
               style={{
-                width: '12px',
-                height: '12px',
-                borderRadius: '50%',
+                width: '8px',
+                height: '8px',
+                borderRadius: '2px',
                 backgroundColor: item.color,
+                opacity: 0.8,
               }}
             />
-            <span className="text-sm font-medium text-slate-300">{item.label} ({item.count})</span>
+            <span className="text-xs text-slate-400">{item.label} <span className="text-slate-500">({item.count})</span></span>
           </div>
         ))}
       </div>

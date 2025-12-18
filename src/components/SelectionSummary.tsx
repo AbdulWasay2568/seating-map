@@ -14,7 +14,6 @@ export default function SelectionSummary({
   onRemoveSeat,
 }: SelectionSummaryProps) {
   const seatCount = selectedSeats.length;
-  const seatsRemaining = 8 - seatCount;
   const subtotal = selectedSeats.reduce((sum, s) => sum + getPriceForTier(s.seat.priceTier), 0);
   const fee = subtotal * 0.05; // 5% service fee
   const total = subtotal + fee;
